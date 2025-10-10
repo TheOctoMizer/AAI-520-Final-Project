@@ -3,8 +3,8 @@ import os
 
 # LLM Configuration
 LMSTUDIO_URL = "http://localhost:1234/v1"
-LLM_NAME = "gemma-3-27b-it"
-ENTITY_EXTRACTOR = "qwen/qwen3-next-80b"
+LLM_NAME = "gemma-3-27b-it-qat"  # Match the actual model ID from LM Studio
+ENTITY_EXTRACTOR = "gemma-3-27b-it-qat"  # Use same model for extraction
 EXTRACTION_TEMPERATURE = 0
 
 # API Keys
