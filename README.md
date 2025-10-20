@@ -297,23 +297,6 @@ Three distinct agentic patterns:
 2. **Parallel**: Intelligent routing to specialized agents
 3. **Iterative**: Quality-driven refinement loop
 
-## Novel Contributions
-
-1. **LLM-Powered Graph Summarization**
-   - First-of-its-kind narrative insights from graph structure
-   - Investment-focused analysis using NetworkX centrality
-   - Depth-aware prompting for context
-
-2. **Integration from Chyavan's Work**
-   - Layer-based depth exploration (depth 1-3)
-   - Financial entity taxonomy (8 categories)
-   - Category-aware data fetching
-
-3. **Complete Autonomous Loop**
-   - Self-contained planning → execution → reflection → learning cycle
-   - Cross-run memory and improvement
-   - Quality-driven iterative refinement
-
 ## License
 
 Academic project for AAI-520 course.
