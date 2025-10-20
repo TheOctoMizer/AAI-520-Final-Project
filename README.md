@@ -4,7 +4,7 @@ A real-world financial analysis system powered by agentic AI, demonstrating auto
 
 ## Project Overview
 
-This project implements an autonomous investment research system that goes beyond traditional scripted pipelines. The system features:
+This project implements an autonomous investment research system that goes beyond traditional scripted pipelines. The system includes these features:
 
 - **Autonomous Agent**: Plans research, executes dynamically, reflects on quality, and learns across runs
 - **Multiple Workflow Patterns**: Prompt chaining, intelligent routing, and evaluator-optimizer patterns
