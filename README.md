@@ -8,7 +8,7 @@ This project implements an autonomous investment research system that goes beyon
 
 - **Autonomous Agent**: Plans research, executes dynamically, reflects on quality, and learns across runs
 - **Multiple Workflow Patterns**: Prompt chaining, intelligent routing, and evaluator-optimizer patterns
-- **Knowledge Graph Integration**: Entity extraction and relationship mapping for comprehensive market understanding
+- **Knowledge Graph Integration**: Entity extraction and relationship mapping with LLM-powered summarization
 - **Self-Improvement**: Iterative refinement based on quality evaluation and feedback
 
 ## Architecture
@@ -17,7 +17,7 @@ This project implements an autonomous investment research system that goes beyon
 Autonomous Research Agent
 ├── Research Planning (autonomous task decomposition)
 ├── Dynamic Tool Selection
-│   ├── Knowledge Graph Builder (entity extraction & expansion)
+│   ├── Knowledge Graph Builder (entity extraction & LLM summarization)
 │   ├── Financial Data Fetchers (Alpha Vantage, Yahoo Finance)
 │   ├── News Analyzers (Wikipedia, DuckDuckGo)
 │   └── Workflow Orchestration
@@ -28,32 +28,15 @@ Autonomous Research Agent
 └── Self-Reflection & Learning (cross-run memory)
 ```
 
-## Project Structure
+## Submission Files
 
 ```
 AAI-520-Final-Project/
-├── agents/
-│   ├── __init__.py
-│   └── research_agent.py          # Main autonomous agent
-├── workflows/
-│   ├── __init__.py
-│   ├── prompt_chaining.py         # Workflow Pattern 1
-│   ├── routing.py                 # Workflow Pattern 2
-│   ├── evaluator_optimizer.py    # Workflow Pattern 3
-│   └── demo_all_workflows.py      # Demonstration script
-├── utils/
-│   ├── __init__.py
-│   ├── config.py                  # Configuration settings
-│   ├── llm_factory.py             # LLM instance creation
-│   ├── data_models.py             # Pydantic models
-│   ├── data_fetchers.py           # Financial data sources
-│   └── knowledge_graph.py         # Graph construction
-├── memory/
-│   └── __init__.py
-├── main.py                        # Main entry point
-├── pyproject.toml                 # Dependencies
-└── README.md
+├── autonomous_research_agent.ipynb  # Complete implementation in single notebook
+└── README.md                        # This file
 ```
+
+**All code is consolidated into the Jupyter notebook** - agents, workflows, utilities, and demonstrations are included in a single, self-contained file.
 
 ## Requirements Met
 
@@ -109,104 +92,115 @@ AAI-520-Final-Project/
 ### Prerequisites
 
 - Python 3.12+
-- LM Studio running locally (or modify config for OpenAI API)
+- LM Studio running locally
 - Alpha Vantage API key
+- Jupyter Notebook
+
+### LLM Configuration
+
+The notebook is configured to use:
+
+```python
+# Main chat model
+LLM_NAME = "gemma-3-27b-it"
+
+# Entity extraction model
+ENTITY_EXTRACTOR = "qwen/qwen3-next-80b"
+
+# LM Studio connection
+LMSTUDIO_URL = "http://localhost:1234/v1"
+```
 
 ### Setup
 
-1. **Clone the repository**
-```bash
-cd AAI-520-Final-Project
-git checkout feature/autonomous-research
-```
+1. **Install LM Studio**
+   - Download from https://lmstudio.ai/
+   - Load the required models:
+     - `gemma-3-27b-it` (main chat model)
+     - `qwen/qwen3-next-80b` (entity extraction)
+   - Start the local server on port 1234
 
-2. **Install dependencies**
-```bash
-# Using uv (recommended)
-uv sync
+2. **Set API Key**
+   ```bash
+   export ALPHA_VANTAGE_KEY="your_api_key_here"
+   ```
+   Or set it directly in the notebook configuration cell.
 
-# Or using pip
-pip install -e .
-```
+3. **Install Python Dependencies**
+   ```bash
+   pip install jupyter langchain langchain-openai langchain-community \
+               yfinance wikipedia duckduckgo-search networkx pydantic requests
+   ```
 
-3. **Set up environment variables**
-```bash
-export ALPHA_VANTAGE_KEY="your_api_key_here"
-```
+4. **Run the Notebook**
+   ```bash
+   jupyter notebook autonomous_research_agent.ipynb
+   ```
 
-4. **Configure LM Studio** (if using local models)
-- Start LM Studio server on port 1234
-- Load models:
-  - Chat model: `gemma-3-27b-it` (or similar)
-  - Extraction model: `qwen/qwen3-next-80b` (or similar)
+   Or using Jupyter Lab:
+   ```bash
+   jupyter lab autonomous_research_agent.ipynb
+   ```
+
+   **Notebook location**: `autonomous_research_agent.ipynb`
 
 ## Usage
 
-### Quick Start: Run All Demonstrations
+### Running the Complete Agent
 
-```bash
-python workflows/demo_all_workflows.py
-```
-
-This demonstrates all three workflow patterns with sample data.
-
-### Run Autonomous Research Agent
-
-```bash
-python agents/research_agent.py
-```
-
-Or use programmatically:
+The notebook includes a demonstration cell that runs the complete autonomous research workflow:
 
 ```python
-from agents.research_agent import AutonomousResearchAgent
+# Change the ticker and context as needed
+ticker = "AAPL"
+context = "Looking for long-term growth potential in tech sector"
 
-agent = AutonomousResearchAgent()
-
-result = agent.research_stock(
-    ticker="AAPL",
-    user_context="Long-term growth analysis"
-)
-
-print(f"Recommendation: {result.investment_analysis['recommendation']}")
-print(f"Quality Score: {result.reflection.completeness_score:.1f}/100")
+# Run autonomous research
+result = agent.research_stock(ticker=ticker, user_context=context)
 ```
 
-### Individual Workflow Patterns
+The agent will:
+1. **Plan** the research with autonomous step decomposition
+2. **Execute** using dynamic tool selection:
+   - Build knowledge graph
+   - Fetch news and analyze
+   - Route to specialist analysts
+   - Generate investment analysis with iterative refinement
+3. **Reflect** on the quality of its research
+4. **Learn** by storing insights for future runs
 
-**Prompt Chaining:**
-```python
-from workflows.prompt_chaining import PromptChainWorkflow
+### Individual Workflow Demonstrations
 
-workflow = PromptChainWorkflow()
-summary = workflow.run(news_text, source="Reuters")
-```
+Each workflow pattern has its own demonstration cell in the notebook:
 
-**Routing:**
-```python
-from workflows.routing import RoutingWorkflow
+**Prompt Chaining Demo**: Process news articles through the sequential pipeline
 
-workflow = RoutingWorkflow()
-result = workflow.process(content, title="Market Update")
-```
+**Routing Demo**: Distribute different content types to appropriate specialists
 
-**Evaluator-Optimizer:**
-```python
-from workflows.evaluator_optimizer import EvaluatorOptimizerWorkflow
+**Evaluator-Optimizer Demo**: Generate and iteratively refine investment analysis
 
-workflow = EvaluatorOptimizerWorkflow(max_iterations=3)
-result = workflow.run(ticker="MSFT", company_data=data)
-```
+### Knowledge Graph with LLM Summarization
 
-### Knowledge Graph
+The notebook includes an enhanced knowledge graph builder with LLM-powered summarization:
 
 ```python
-from utils.knowledge_graph import KnowledgeGraphBuilder
-
 builder = KnowledgeGraphBuilder()
+
+# Expand graph with configurable depth
 graph = builder.expand_from_seed("TSLA", depth=2)
+
+# Get standard structural summary
 print(builder.get_graph_summary())
+
+# NEW: Generate LLM-powered investment insights
+llm_insights = builder.generate_llm_summary(focus_entity="TSLA")
+print(llm_insights)
 ```
+
+**Depth levels** (inspired by chyavan's graph exploration):
+- `depth=1`: Direct connections (immediate relationships)
+- `depth=2`: Second-degree connections (connections of connections) - default
+- `depth=3`: Extended network (third-degree connections)
 
 ## Key Features
 
@@ -252,21 +246,17 @@ Gaps to avoid:
 - Missing regulatory context
 ```
 
-## Configuration
+### 5. LLM-Powered Knowledge Graph Summarization (NEW)
 
-Edit `utils/config.py` to customize:
+Enhanced knowledge graph builder with intelligent narrative summarization:
 
-```python
-# LLM Configuration
-LMSTUDIO_URL = "http://localhost:1234/v1"
-LLM_NAME = "gemma-3-27b-it"
+**What it analyzes:**
+- Network centrality (who are the key players?)
+- Relationship patterns (what connections matter?)
+- Investment implications (what does the structure reveal?)
+- Entity significance (why does this entity matter?)
 
-# API Keys
-ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_KEY')
-
-# Parameters
-FETCH_DELAY_SECONDS = 1.5  # Rate limiting
-```
+This goes beyond simple node/edge listings to provide actionable investment insights.
 
 ## Data Sources
 
@@ -277,110 +267,59 @@ FETCH_DELAY_SECONDS = 1.5  # Rate limiting
 
 ## Technical Highlights
 
-### Structured Outputs with Pydantic
+### Pydantic Data Models
 
-All workflows use Pydantic models for type-safe, validated outputs:
-```python
-class NewsClassification(BaseModel):
-    category: str = Field(description="earnings, market_analysis, policy, ...")
-    sentiment: str = Field(description="positive, negative, neutral")
-    relevance_score: float = Field(description="0-1")
-```
+All workflow outputs use structured Pydantic models for type safety and validation:
+- NewsArticle, PreprocessedNews, NewsClassification
+- ExtractedEntities, NewsSummary
+- RoutingDecision, EarningsAnalysis, NewsAnalysis, MarketAnalysis
+- InvestmentAnalysis, QualityEvaluation
+- ResearchPlan, ResearchReflection, ResearchResult
 
 ### LangChain Integration
 
-- `ChatOpenAI` for LLM calls
-- `with_structured_output()` for typed responses
-- `ChatPromptTemplate` for prompt management
+- ChatOpenAI for LLM interactions
+- Structured outputs with `.with_structured_output()`
+- ChatPromptTemplate for consistent prompting
 - Community tools (Yahoo Finance, Wikipedia, DuckDuckGo)
 
-### NetworkX Knowledge Graphs
+### NetworkX Graph Analysis
 
-- Entities as nodes with labels and confidence
-- Relationships as edges with context
-- Multi-layer expansion from seed entities
-- Graph analytics (degree centrality, clustering)
+- Entity relationship mapping
+- Degree centrality for hub identification
+- Graph traversal and expansion
+- LLM-powered graph interpretation
 
-## Demonstrations
+### Workflow Orchestration
 
-Each workflow includes a standalone demonstration:
+Three distinct agentic patterns:
+1. **Sequential**: Pipeline with state passing between steps
+2. **Parallel**: Intelligent routing to specialized agents
+3. **Iterative**: Quality-driven refinement loop
 
-```bash
-# Prompt Chaining demo
-python -c "from workflows.prompt_chaining import demonstrate_prompt_chaining; demonstrate_prompt_chaining()"
+## Novel Contributions
 
-# Routing demo
-python -c "from workflows.routing import demonstrate_routing; demonstrate_routing()"
+1. **LLM-Powered Graph Summarization**
+   - First-of-its-kind narrative insights from graph structure
+   - Investment-focused analysis using NetworkX centrality
+   - Depth-aware prompting for context
 
-# Evaluator-Optimizer demo
-python -c "from workflows.evaluator_optimizer import demonstrate_evaluator_optimizer; demonstrate_evaluator_optimizer()"
+2. **Integration from Chyavan's Work**
+   - Layer-based depth exploration (depth 1-3)
+   - Financial entity taxonomy (8 categories)
+   - Category-aware data fetching
 
-# Full autonomous agent demo
-python -c "from agents.research_agent import demonstrate_autonomous_agent; demonstrate_autonomous_agent()"
-```
-
-## Testing & Validation
-
-The system demonstrates:
-
-1. **Workflow Patterns**: Each pattern runs independently with example data
-2. **Agent Autonomy**: Plans, executes, reflects without human intervention
-3. **Quality Improvement**: Scores increase across evaluator-optimizer iterations
-4. **Learning**: Memory file shows accumulated learnings
-5. **Integration**: All components work together in autonomous agent
-
-## Future Enhancements
-
-- Database persistence for knowledge graphs (SQLite/ChromaDB)
-- Web interface for interactive research
-- Real-time market data streaming
-- Backtesting framework for recommendations
-- Multi-agent collaboration (research team simulation)
-- RAG integration for document analysis
-
-## Project Requirements Checklist
-
-### Agent Functions (4/4)
-- [x] Plans research steps autonomously
-- [x] Uses tools dynamically (APIs, datasets, retrieval)
-- [x] Self-reflects to assess output quality
-- [x] Learns across runs (memory/notes)
-
-### Workflow Patterns (3/3)
-- [x] Prompt Chaining: Ingest → Preprocess → Classify → Extract → Summarize
-- [x] Routing: Content → Router → Specialist Analyzers
-- [x] Evaluator-Optimizer: Generate → Evaluate → Refine
-
-### Technical Implementation
-- [x] LangChain integration
-- [x] Pydantic structured outputs
-- [x] Multiple data sources (APIs, search, knowledge bases)
-- [x] Graph-based entity modeling
-- [x] Modular, maintainable architecture
-- [x] Comprehensive documentation
-
-## Implementation Details
-
-For detailed implementation information, code metrics, and requirements coverage, see [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md).
-
-This document provides:
-- Complete requirements coverage mapping
-- Code metrics and file structure
-- Technical implementation details
-- Testing framework overview
-- Deliverables checklist
-
-## Team Members
-
-[Your team members here]
+3. **Complete Autonomous Loop**
+   - Self-contained planning → execution → reflection → learning cycle
+   - Cross-run memory and improvement
+   - Quality-driven iterative refinement
 
 ## License
 
 Academic project for AAI-520 course.
 
-## Acknowledgments
+## Authors
 
-- LangChain for agent framework
-- Alpha Vantage for financial data API
-- Yahoo Finance for news data
-- NetworkX for graph algorithms
+Marco Gonzalez  mantonio@sandiego.edu
+Chyavan Shenoy  cshenoy@sandiego.edu
+Prakruti Rao    prao@sandiego.edu
