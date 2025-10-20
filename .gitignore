@@ -209,3 +209,11 @@ __marimo__/
 
 
 *.pdf
+
+# Documentation files (keep locally, don't commit)
+SUBMISSION_READY.md
+QUICK_START.md
+ENHANCEMENTS_FROM_CHYAVAN.md
+FINAL_SUBMISSION_FILES.md
+SUBMISSION_SUMMARY.txt
+COMMIT_SUMMARY.md
